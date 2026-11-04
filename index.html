@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kopi Kita</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2ee;--card:#fff;--tx:#17201b;--mu:#6f7d75;--bd:#dde5df;--ac:#1f8a63;--acs:color-mix(in srgb,var(--ac) 13%,var(--card))}
+[data-t=dark]{--bg:#0f1512;--card:#18201c;--tx:#eaf1ec;--mu:#92a399;--bd:#26312b}
+*{box-sizing:border-box;margin:0}
+body{font:15px/1.5 'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+h2{font-size:24px;font-weight:800;margin-bottom:14px}h3{margin-bottom:10px}
+small{display:block;color:var(--mu);font-size:12px}.mu{color:var(--mu)}label{font-size:13px;font-weight:600}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:16px}
+.btn{display:inline-flex;gap:8px;align-items:center;justify-content:center;border:0;border-radius:14px;padding:12px 18px;background:var(--ac);color:#fff;font-weight:700}
+.btn.g{background:var(--acs);color:var(--ac)}.btn:disabled{opacity:.45}.w{width:100%}
+.in{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--bd);background:var(--bg);margin:6px 0 12px}
+.row,.head{display:flex;align-items:center;justify-content:space-between;gap:10px}.grow{flex:1}
+.list{display:grid;gap:10px}.two{display:flex;gap:10px}.two .btn{flex:1}
+.app{display:grid;min-height:100dvh}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:5;display:flex;background:var(--card);border-top:1px solid var(--bd);padding:6px 6px calc(6px + env(safe-area-inset-bottom))}
+nav button{flex:1;background:none;border:0;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:600;color:var(--mu);padding:6px;border-radius:14px}
+nav button.on{color:var(--ac);background:var(--acs)}.brand{display:none}
+main{width:100%;max-width:1100px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 16px 110px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.stat .ico,.ico{width:40px;height:40px;border-radius:12px;background:var(--acs);color:var(--ac);display:grid;place-items:center}
+.stat b{display:block;font-size:20px;margin-top:8px}
+.bars{display:flex;gap:10px;height:170px;align-items:flex-end}
+.bars div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.bars i{width:100%;background:var(--ac);border-radius:8px 8px 3px 3px;min-height:4px}
+.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px}
+.chip,.seg button,.biz{display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;border-radius:14px;border:1px solid var(--bd);background:var(--card);white-space:nowrap;font-weight:600}
+.on{background:var(--acs)!important;color:var(--ac);border-color:var(--ac)}
+.seg{display:flex;gap:8px;margin:10px 0}.seg button{flex:1}.biz{width:100%;margin-bottom:8px;justify-content:flex-start}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));align-content:start}
+.prod{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:14px;border-radius:20px;border:1px solid var(--bd);background:var(--card)}
+.prod svg{color:var(--ac)}.prod:disabled{opacity:.4}.prod span{color:var(--ac);font-weight:700}
+.pos{display:grid;gap:16px}.cart{position:sticky;bottom:84px;max-height:60vh;overflow:auto;box-shadow:0 -10px 30px #0002}
+.cart .row{margin-bottom:8px}.tot{font-size:18px;margin:6px 0 12px}
+.qty{display:flex;align-items:center;gap:8px}.qty button,.ib{width:34px;height:34px;border-radius:10px;border:1px solid var(--bd);background:var(--card);display:grid;place-items:center}
+.low small{color:#d6336c}.tag{background:var(--acs);color:var(--ac);padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700}
+.dots{display:flex;gap:12px;margin:10px 0 14px}.dot{width:38px;height:38px;border-radius:50%;border:3px solid var(--card);outline:2px solid transparent}.dot.on{outline-color:var(--tx)}
+.settings{display:grid;gap:14px}
+.auth{min-height:100dvh;display:grid;place-items:center;padding:20px}.auth .card{width:100%;max-width:400px;padding:28px}
+.logo{width:54px;height:54px;border-radius:18px;background:var(--ac);color:#fff;display:grid;place-items:center;margin-bottom:16px}.logo svg{width:28px;height:28px}
+.alt{text-align:center;margin-top:16px;color:var(--mu)}.alt a{color:var(--ac);font-weight:700;cursor:pointer}
+.modal{position:fixed;inset:0;background:#0008;display:grid;place-items:end center;z-index:20;padding:12px}.sheet{width:100%;max-width:440px}
+#toast{position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translate(-50%,-90px);background:var(--tx);color:var(--bg);padding:12px 18px;border-radius:14px;z-index:30;transition:.25s;font-weight:600;max-width:90%}#toast.show{transform:translate(-50%,0)}
+@media(min-width:900px){
+ .app{grid-template-columns:240px 1fr}
+ nav{position:sticky;top:0;height:100dvh;flex-direction:column;border:0;border-right:1px solid var(--bd);padding:22px 14px;gap:4px}
+ nav button{flex:none;flex-direction:row;font-size:14px;gap:12px;padding:12px 14px}
+ .brand{display:flex;align-items:center;gap:10px;font-size:17px;font-weight:800;margin-bottom:18px;padding:0 6px}
+ main{padding:32px 36px}.pos{grid-template-columns:1fr 340px;align-items:start}.cart{top:20px;bottom:auto;max-height:none;box-shadow:none}
+ .modal{place-items:center}}
+</style></head>
+<body><div id="root"></div><div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+// ===== ISI DUA BARIS INI (dari Supabase > Project Settings > API) =====
+const SUPABASE_URL='';
+const SUPABASE_KEY='';
+// =====================================================================
+const $=s=>document.querySelector(s),R=$('#root');
+const rp=n=>'Rp'+Math.round(n||0).toLocaleString('id-ID');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const I={
+home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
+cart:'<circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h3l2.7 12.4a2 2 0 002 1.6h7.7a2 2 0 002-1.5L21 7H6"/>',
+coffee:'<path d="M3 8h14v6a5 5 0 01-5 5H8a5 5 0 01-5-5z"/><path d="M17 10h2a2 2 0 010 4h-2"/><path d="M7 2v3M11 2v3"/>',
+chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+sliders:'<path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="8" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',
+trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',
+logout:'<path d="M9 21H5V3h4M16 17l5-5-5-5M21 12H9"/>',
+store:'<path d="M3 9l1-5h16l1 5M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0M5 12v8h14v-8"/>',
+sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+moon:'<path d="M21 13A9 9 0 1111 3a7 7 0 0010 10z"/>',
+cash:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/>',
+qr:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM20 14v3M14 20h7"/>',
+receipt:'<path d="M5 3h14v18l-3-2-2 2-2-2-2 2-2-2-3 2z"/><path d="M9 8h6M9 12h6"/>'};
+const ic=n=>`<svg class="ic" viewBox="0 0 24 24">${I[n]}</svg>`;
+const ACS=['#1f8a63','#7a4a2b','#d6336c','#2563eb','#f08c00'];
+let th=JSON.parse(localStorage.th||'{"m":"light","c":"#1f8a63"}');
+const applyTh=()=>{document.documentElement.dataset.t=th.m;document.documentElement.style.setProperty('--ac',th.c);localStorage.th=JSON.stringify(th)};applyTh();
+const toast=m=>{const t=$('#toast');t.textContent=m;t.className='show';clearTimeout(toast.i);toast.i=setTimeout(()=>t.className='',2800)};
+const modal=h=>{shut();const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="card sheet">${h}</div>`;document.body.append(m)};
+const shut=()=>$('.modal')?.remove();
+const CFG=JSON.parse(localStorage.cfg||'{}'),U=SUPABASE_URL||CFG.u,K=SUPABASE_KEY||CFG.k;
+const S={tab:'home',cart:{},cat:'Semua',rng:'today',method:'Tunai',mode:'login',biz:[],prods:[],orders:[]};
+let sb;
+const d0=()=>{const d=new Date();d.setHours(0,0,0,0);return d};
+const stat=(l,v,i)=>`<div class="card stat"><div class="ico">${ic(i)}</div><b>${v}</b><small>${l}</small></div>`;
+const empty='<p class="mu">Belum ada data.</p>';
+
+function setup(){R.innerHTML=`<div class="auth"><div class="card"><div class="logo">${ic('coffee')}</div><h2>Sambungkan Supabase</h2><p class="mu">Tempel Project URL dan anon key dari Supabase (Project Settings, API).</p><br><input id="su" class="in" placeholder="Project URL"><input id="sk" class="in" placeholder="anon public key"><button class="btn w" data-a="savecfg">Simpan</button></div></div>`}
+function authView(){const r=S.mode=='reg';R.innerHTML=`<div class="auth"><div class="card"><div class="logo">${ic('coffee')}</div><h2>${r?'Buat akun baru':'Selamat datang'}</h2><p class="mu">${r?'Daftar dan mulai kelola coffee shop kamu.':'Masuk untuk lanjut kelola coffee shop.'}</p><br>${r?'<label>Nama kamu</label><input id="nm" class="in"><label>Nama coffee shop</label><input id="bz" class="in">':''}<label>Email</label><input id="em" type="email" class="in"><label>Password</label><input id="pw" type="password" class="in" placeholder="Minimal 6 karakter"><button class="btn w" data-a="doauth">${r?'Daftar':'Masuk'}</button><p class="alt">${r?'Sudah punya akun?':'Belum punya akun?'} <a data-a="authmode">${r?'Masuk':'Daftar'}</a></p></div></div>`}
+
+async function boot(){
+ const{data:{session}}=await sb.auth.getSession();S.u=session?.user;
+ if(!S.u)return authView();
+ const{data:m,error}=await sb.from('members').select('business_id,businesses(name)').eq('user_id',S.u.id);
+ if(error)return toast(error.message);
+ if(!m.length){const{error:e}=await sb.rpc('create_business',{n:S.u.user_metadata.biz||'Kedai Saya'});if(e)return toast(e.message);return boot()}
+ S.biz=m.map(x=>({id:x.business_id,name:x.businesses.name}));
+ S.b=S.biz.find(x=>x.id==localStorage.b)?.id||S.biz[0].id;
+ sub();load()}
+function sub(){sb.removeAllChannels();const f={event:'*',schema:'public',filter:'business_id=eq.'+S.b};
+ sb.channel('rt').on('postgres_changes',{...f,table:'orders'},()=>load()).on('postgres_changes',{...f,table:'products'},()=>load()).subscribe()}
+async function load(){
+ const s=d0();s.setDate(s.getDate()-6);
+ const[p,o]=await Promise.all([sb.from('products').select('*').eq('business_id',S.b).order('name'),
+ sb.from('orders').select('*,order_items(name,qty,price)').eq('business_id',S.b).gte('created_at',s.toISOString()).order('created_at',{ascending:false})]);
+ S.prods=p.data||[];S.orders=o.data||[];draw()}
+
+const TABS=[['home','Beranda','home'],['pos','Kasir','cart'],['menu','Menu','coffee'],['rep','Laporan','chart'],['set','Setelan','sliders']];
+function draw(){
+ if(!$('main'))R.innerHTML='<div class="app"><nav></nav><main></main></div>';
+ $('nav').innerHTML=`<div class="brand">${ic('coffee')}${esc(S.biz.find(b=>b.id==S.b)?.name)}</div>`+TABS.map(([k,l,i])=>`<button class="${S.tab==k?'on':''}" data-a="tab" data-k="${k}">${ic(i)}<span>${l}</span></button>`).join('');
+ $('main').innerHTML=({home,pos,menu,rep,set})[S.tab]()}
+
+function home(){
+ const os=S.orders.filter(o=>new Date(o.created_at)>=d0()),sum=os.reduce((a,o)=>a+ +o.total,0);
+ const days=[...Array(7)].map((_,i)=>{const d=d0();d.setDate(d.getDate()-6+i);const e=new Date(d);e.setDate(e.getDate()+1);
+  return{l:d.toLocaleDateString('id-ID',{weekday:'short'}),v:S.orders.filter(o=>{const t=new Date(o.created_at);return t>=d&&t<e}).reduce((a,o)=>a+ +o.total,0)}});
+ const mx=Math.max(...days.map(d=>d.v),1),top={};
+ S.orders.forEach(o=>o.order_items.forEach(i=>top[i.name]=(top[i.name]||0)+i.qty));
+ const tp=Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,5);
+ return `<h2>Halo, ${esc(S.u.user_metadata.name||'Barista')}</h2>
+ <div class="stats">${stat('Penjualan hari ini',rp(sum),'cash')}${stat('Transaksi',os.length,'receipt')}${stat('Rata-rata per transaksi',rp(sum/(os.length||1)),'chart')}${stat('Stok menipis',S.prods.filter(p=>p.stock<=5).length,'coffee')}</div>
+ <div class="card" style="margin-bottom:14px"><h3>Penjualan 7 hari</h3><div class="bars">${days.map(d=>`<div><i style="height:${d.v/mx*78}%"></i><small>${d.l}</small></div>`).join('')}</div></div>
+ <div class="card"><h3>Menu terlaris</h3>${tp.map(([n,q])=>`<div class="row"><span>${esc(n)}</span><b>${q} terjual</b></div>`).join('')||empty}</div>`}
+
+function pos(){
+ const cats=['Semua',...new Set(S.prods.map(p=>p.category))],ps=S.prods.filter(p=>S.cat=='Semua'||p.category==S.cat);
+ const it=Object.values(S.cart),tot=it.reduce((a,i)=>a+i.price*i.qty,0);
+ return `<h2>Kasir</h2><div class="chips">${cats.map(c=>`<button class="chip ${c==S.cat?'on':''}" data-a="cat" data-k="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+ <div class="pos"><div class="grid">${ps.map(p=>`<button class="prod" ${p.stock<=0?'disabled':''} data-a="add" data-id="${p.id}">${ic('coffee')}<b>${esc(p.name)}</b><span>${rp(p.price)}</span><small>Stok ${p.stock}</small></button>`).join('')||empty}</div>
+ <div class="card cart"><h3>Pesanan</h3>${it.map(i=>`<div class="row"><span>${esc(i.name)}<small>${rp(i.price)}</small></span><div class="qty"><button data-a="dec" data-id="${i.id}">${ic('minus')}</button><b>${i.qty}</b><button data-a="add" data-id="${i.id}">${ic('plus')}</button></div></div>`).join('')||'<p class="mu">Pilih menu untuk mulai.</p>'}
+ <div class="seg">${['Tunai','QRIS'].map(m=>`<button class="${S.method==m?'on':''}" data-a="method" data-k="${m}">${ic(m=='Tunai'?'cash':'qr')}${m}</button>`).join('')}</div>
+ ${S.method=='Tunai'?'<input id="cash" class="in" type="number" inputmode="numeric" placeholder="Uang diterima (opsional)">':''}
+ <div class="row tot"><span>Total</span><b>${rp(tot)}</b></div><button class="btn w" data-a="pay" ${it.length?'':'disabled'}>Bayar</button></div></div>`}
+
+function menu(){return `<div class="head"><h2>Menu</h2><button class="btn" data-a="pform">${ic('plus')}Tambah menu</button></div><div class="list">${S.prods.map(p=>`<div class="card row ${p.stock<=5?'low':''}"><div class="ico">${ic('coffee')}</div><div class="grow"><b>${esc(p.name)}</b><small>${esc(p.category)}, ${rp(p.price)}, stok ${p.stock}</small></div><button class="ib" data-a="pform" data-id="${p.id}">${ic('edit')}</button><button class="ib" data-a="del" data-id="${p.id}">${ic('trash')}</button></div>`).join('')||empty}</div>`}
+
+function rep(){
+ const from=S.rng=='today'?d0():(()=>{const d=d0();d.setDate(d.getDate()-6);return d})();
+ const os=S.orders.filter(o=>new Date(o.created_at)>=from),sm=m=>os.filter(o=>o.method==m).reduce((a,o)=>a+ +o.total,0);
+ return `<h2>Laporan</h2><div class="chips">${[['today','Hari ini'],['week','7 hari']].map(([k,l])=>`<button class="chip ${S.rng==k?'on':''}" data-a="rng" data-k="${k}">${l}</button>`).join('')}</div>
+ <div class="stats">${stat('Total',rp(sm('Tunai')+sm('QRIS')),'chart')}${stat('Tunai',rp(sm('Tunai')),'cash')}${stat('QRIS',rp(sm('QRIS')),'qr')}</div>
+ <div class="list">${os.map(o=>`<div class="card"><div class="row"><b>${rp(o.total)}</b><span class="tag">${o.method}</span></div><small>${new Date(o.created_at).toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'short'})}</small><p class="mu">${o.order_items.map(i=>i.qty+'x '+esc(i.name)).join(', ')}</p></div>`).join('')||empty}</div>`}
+
+function set(){return `<h2>Setelan</h2><div class="settings">
+ <div class="card"><h3>Tampilan</h3><div class="seg">${[['light','Terang','sun'],['dark','Gelap','moon']].map(([k,l,i])=>`<button class="${th.m==k?'on':''}" data-a="mode" data-k="${k}">${ic(i)}${l}</button>`).join('')}</div>
+ <p class="mu">Warna tema</p><div class="dots">${ACS.map(c=>`<button class="dot ${c==th.c?'on':''}" style="background:${c}" data-a="ac" data-k="${c}" aria-label="${c}"></button>`).join('')}</div>
+ <small>Susunan layar menyesuaikan perangkat: menu bawah di HP, sidebar di laptop.</small></div>
+ <div class="card"><h3>Bisnis</h3>${S.biz.map(b=>`<button class="biz ${b.id==S.b?'on':''}" data-a="biz" data-id="${b.id}">${ic('store')}${esc(b.name)}</button>`).join('')}<button class="btn g w" data-a="nbiz">${ic('plus')}Tambah bisnis</button></div>
+ <div class="card"><h3>Akun</h3><p class="mu" style="margin-bottom:12px">${esc(S.u.email)}</p><button class="btn g w" data-a="logout">${ic('logout')}Keluar</button></div></div>`}
+
+const A={
+ tab:d=>{S.tab=d.k;scrollTo(0,0);draw()},cat:d=>{S.cat=d.k;draw()},rng:d=>{S.rng=d.k;draw()},method:d=>{S.method=d.k;draw()},
+ mode:d=>{th.m=d.k;applyTh();draw()},ac:d=>{th.c=d.k;applyTh();draw()},close:shut,
+ add:d=>{const p=S.prods.find(x=>x.id==d.id),c=S.cart[d.id]||(S.cart[d.id]={id:p.id,name:p.name,price:+p.price,qty:0});if(c.qty<p.stock)c.qty++;else toast('Stok habis');draw()},
+ dec:d=>{if(--S.cart[d.id].qty<=0)delete S.cart[d.id];draw()},
+ async pay(){const it=Object.values(S.cart),tot=it.reduce((a,i)=>a+i.price*i.qty,0),cash=+($('#cash')?.value||0);
+  if(S.method=='Tunai'&&cash&&cash<tot)return toast('Uang yang diterima kurang');
+  const{error}=await sb.rpc('checkout',{b:S.b,m:S.method,items:it});if(error)return toast(error.message);
+  S.cart={};toast(cash>tot?'Kembalian '+rp(cash-tot):'Pembayaran berhasil');load()},
+ pform(d){const p=S.prods.find(x=>x.id==d.id)||{};modal(`<h3>${p.id?'Edit':'Tambah'} menu</h3><label>Nama</label><input id="pn" class="in" value="${esc(p.name)}"><label>Kategori</label><input id="pc" class="in" value="${esc(p.category||'Kopi')}"><label>Harga</label><input id="pp" type="number" class="in" value="${p.price??''}"><label>Stok</label><input id="ps" type="number" class="in" value="${p.stock??0}"><div class="two"><button class="btn g" data-a="close">Batal</button><button class="btn" data-a="psave" data-id="${p.id||''}">Simpan</button></div>`)},
+ async psave(d){const r={business_id:S.b,name:$('#pn').value.trim(),category:$('#pc').value.trim()||'Kopi',price:+$('#pp').value,stock:+$('#ps').value||0};
+  if(!r.name||!(r.price>=0)||$('#pp').value==='')return toast('Isi nama dan harga');
+  const{error}=d.id?await sb.from('products').update(r).eq('id',d.id):await sb.from('products').insert(r);
+  if(error)return toast(error.message);shut();toast('Menu tersimpan');load()},
+ del(d){const p=S.prods.find(x=>x.id==d.id);modal(`<h3>Hapus menu?</h3><p class="mu" style="margin-bottom:14px">${esc(p.name)}</p><div class="two"><button class="btn g" data-a="close">Batal</button><button class="btn" data-a="delok" data-id="${p.id}">Hapus</button></div>`)},
+ async delok(d){const{error}=await sb.from('products').delete().eq('id',d.id);if(error)return toast(error.message);shut();load()},
+ biz:d=>{S.b=d.id;localStorage.b=d.id;S.cart={};sub();load()},
+ nbiz:()=>modal(`<h3>Tambah bisnis</h3><label>Nama coffee shop</label><input id="nb" class="in"><div class="two"><button class="btn g" data-a="close">Batal</button><button class="btn" data-a="nbsave">Buat</button></div>`),
+ async nbsave(){const n=$('#nb').value.trim();if(!n)return toast('Isi nama bisnis');const{data,error}=await sb.rpc('create_business',{n});if(error)return toast(error.message);localStorage.b=data;shut();boot()},
+ async logout(){await sb.auth.signOut();sb.removeAllChannels();S.mode='login';authView()},
+ authmode:()=>{S.mode=S.mode=='reg'?'login':'reg';authView()},
+ async doauth(){const v=i=>$('#'+i)?.value.trim(),em=v('em'),pw=v('pw');
+  if(!em||!pw||pw.length<6)return toast('Isi email dan password (minimal 6 karakter)');
+  if(S.mode=='reg'){if(!v('bz'))return toast('Isi nama coffee shop');
+   const{data,error}=await sb.auth.signUp({email:em,password:pw,options:{data:{name:v('nm'),biz:v('bz')}}});
+   if(error)return toast(error.message);if(!data.session)return toast('Akun dibuat. Cek email untuk konfirmasi, lalu masuk.')}
+  else{const{error}=await sb.auth.signInWithPassword({email:em,password:pw});if(error)return toast(error.message)}
+  boot()},
+ savecfg(){const u=$('#su').value.trim(),k=$('#sk').value.trim();if(!u||!k)return toast('Isi keduanya');localStorage.cfg=JSON.stringify({u,k});location.reload()}
+};
+document.addEventListener('click',e=>{if(e.target.classList.contains('modal'))return shut();const el=e.target.closest('[data-a]');if(el)A[el.dataset.a]?.(el.dataset)});
+if(!U||!K)setup();else{sb=supabase.createClient(U,K);boot()}
+</script></body></html>
