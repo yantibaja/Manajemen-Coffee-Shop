@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="id"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Katalog</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef2ee;--card:#fff;--tx:#17201b;--mu:#6f7d75;--bd:#dde5df;--ac:#1f8a63;--acs:color-mix(in srgb,var(--ac) 13%,var(--card))}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1512;--card:#18201c;--tx:#eaf1ec;--mu:#92a399;--bd:#26312b}}
+*{box-sizing:border-box;margin:0}
+body{font:15px/1.5 'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+button,input{font:inherit;color:inherit}button{cursor:pointer}
+.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:720px;margin:auto;padding:calc(16px + env(safe-area-inset-top)) 16px 120px}
+h2{font-size:22px;font-weight:800;margin:14px 0}small{display:block;color:var(--mu);font-size:12px}.mu{color:var(--mu)}label{font-size:13px;font-weight:600}
+hr{border:0;border-top:1px dashed var(--bd);margin:10px 0}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:16px}
+.btn{display:inline-flex;gap:8px;align-items:center;justify-content:center;border:0;border-radius:14px;padding:12px 18px;background:var(--ac);color:#fff;font-weight:700;text-decoration:none}
+.btn.g{background:var(--acs);color:var(--ac)}.w{width:100%}
+.in{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--bd);background:var(--bg);margin:6px 0 12px}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:16px}.top h1{font-size:20px;font-weight:800}
+.top img,.logo{width:50px;height:50px;border-radius:14px;object-fit:contain;background:var(--card)}.logo{display:grid;place-items:center;color:var(--ac)}
+.row,.two{display:flex;gap:10px;align-items:center;justify-content:space-between}.two .btn{flex:1}
+.chips{display:flex;gap:8px;overflow-x:auto;margin-bottom:14px}
+.chip,.seg button{padding:10px 14px;border-radius:14px;border:1px solid var(--bd);background:var(--card);white-space:nowrap;font-weight:600}
+.seg{display:flex;gap:8px;margin:6px 0 12px;flex-wrap:wrap}.seg button{flex:1}
+.on{background:var(--acs)!important;color:var(--ac);border-color:var(--ac)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.prod{display:flex;flex-direction:column;gap:6px;padding:14px;border-radius:20px;border:1px solid var(--bd);background:var(--card)}
+.prod svg{color:var(--ac)}.prod span{color:var(--ac);font-weight:700}
+.qty{display:flex;align-items:center;gap:10px;justify-content:center}.qty button{width:34px;height:34px;border-radius:10px;border:1px solid var(--bd);background:var(--card);display:grid;place-items:center}
+.bar{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom));max-width:696px;margin:auto}
+.tag{background:var(--acs);color:var(--ac);padding:2px 10px;border-radius:99px;font-size:12px;font-weight:700}
+#toast{position:fixed;left:50%;top:14px;transform:translate(-50%,-90px);background:var(--tx);color:var(--bg);padding:12px 18px;border-radius:14px;z-index:30;transition:.25s;font-weight:600;max-width:90%}#toast.show{transform:translate(-50%,0)}
+@media print{.noprint{display:none!important}body{background:#fff;color:#000}}
+</style></head>
+<body><div id="root"></div><div id="toast"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+// ===== ISI DUA BARIS INI: sama persis dengan yang di index.html =====
+const SUPABASE_URL='';
+const SUPABASE_KEY='';
+// ====================================================================
+const $=s=>document.querySelector(s),R=$('#root');
+const rp=n=>'Rp'+Math.round(n||0).toLocaleString('id-ID');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const I={coffee:'<path d="M3 8h14v6a5 5 0 01-5 5H8a5 5 0 01-5-5z"/><path d="M17 10h2a2 2 0 010 4h-2"/><path d="M7 2v3M11 2v3"/>',plus:'<path d="M12 5v14M5 12h14"/>',minus:'<path d="M5 12h14"/>',cart:'<circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/><path d="M2 3h3l2.7 12.4a2 2 0 002 1.6h7.7a2 2 0 002-1.5L21 7H6"/>',store:'<path d="M3 9l1-5h16l1 5M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0M5 12v8h14v-8"/>'};
+const ic=n=>`<svg class="ic" viewBox="0 0 24 24">${I[n]}</svg>`;
+const toast=m=>{const t=$('#toast');t.textContent=m;t.className='show';clearTimeout(toast.i);toast.i=setTimeout(()=>t.className='',3000)};
+const wa=p=>{p=String(p).replace(/\D/g,'');return p.startsWith('0')?'62'+p.slice(1):p};
+const P=new URLSearchParams(location.search),B=P.get('b'),K=P.get('k');
+const PK={ambil_sendiri:'Ambil sendiri',ojol:'Ojol',orang_lain:'Orang lain'};
+const ST={baru:'Pesanan diterima',diproses:'Sedang diproses',siap:'Siap diambil',selesai:'Selesai',batal:'Dibatalkan'};
+let sb,C,rc,cart={},cat='Semua',V='cat',f={pickup:'ambil_sendiri',pay:''};
+const tot=()=>Object.values(cart).reduce((a,i)=>a+i.price*i.qty,0),cnt=()=>Object.values(cart).reduce((a,i)=>a+i.qty,0);
+const head=()=>`<div class="top">${C.logo?`<img src="${esc(C.logo)}">`:`<div class="logo">${ic('store')}</div>`}<div><h1>${esc(C.name)}</h1><small>Pesan online, ambil di toko</small></div></div>`;
+const stp=(id,q)=>`<div class="qty"><button data-a="dec" data-id="${id}">${ic('minus')}</button><b>${q}</b><button data-a="add" data-id="${id}">${ic('plus')}</button></div>`;
+function catView(){
+ const cs=['Semua',...new Set(C.products.map(p=>p.category))],ps=C.products.filter(p=>cat=='Semua'||p.category==cat),n=cnt();
+ return `<div class="wrap">${head()}<div class="chips">${cs.map(c=>`<button class="chip ${c==cat?'on':''}" data-a="ct" data-k="${esc(c)}">${esc(c)}</button>`).join('')}</div><div class="grid">${ps.map(p=>{const q=cart[p.id]?.qty||0;return `<div class="prod">${ic('coffee')}<b>${esc(p.name)}</b><span>${rp(p.price)}</span>${q?stp(p.id,q):`<button class="btn g w" data-a="add" data-id="${p.id}">${ic('plus')}Tambah</button>`}</div>`}).join('')||'<p class="mu">Belum ada menu tersedia.</p>'}</div></div>${n?`<div class="bar"><button class="btn w" data-a="go">${ic('cart')}${n} item, ${rp(tot())}. Lihat pesanan</button></div>`:''}`}
+function formView(){
+ const it=Object.values(cart);
+ return `<div class="wrap">${head()}<button class="btn g" data-a="back">Kembali ke menu</button><h2>Pesanan kamu</h2><div class="card" style="margin-bottom:14px">${it.map(i=>`<div class="row" style="margin-bottom:8px"><span>${esc(i.name)}<small>${rp(i.price)}</small></span>${stp(i.id,i.qty)}</div>`).join('')}<hr><div class="row"><b>Total</b><b>${rp(tot())}</b></div></div>
+ <div class="card"><label>Nama</label><input id="n" class="in" value="${esc(f.n)}"><label>No. HP / WhatsApp</label><input id="p" type="tel" class="in" value="${esc(f.p)}"><label>Pengambilan</label><div class="seg">${Object.entries(PK).map(([k,l])=>`<button class="${f.pickup==k?'on':''}" data-a="pk" data-k="${k}">${l}</button>`).join('')}</div>${f.pickup!='ambil_sendiri'?`<label>${f.pickup=='ojol'?'Nama driver ojol (opsional)':'Nama orang yang mengambil'}</label><input id="r" class="in" value="${esc(f.r)}">`:''}<label>Pembayaran</label><div class="seg">${C.cod!==false?`<button class="${f.pay=='COD'?'on':''}" data-a="py" data-k="COD">Bayar di tempat</button>`:''}${C.qr!==false?`<button class="${f.pay=='QRIS'?'on':''}" data-a="py" data-k="QRIS">QRIS</button>`:''}</div><label>Catatan (opsional)</label><input id="c" class="in" value="${esc(f.c)}"><button class="btn w" data-a="send">Pesan sekarang</button></div></div>`}
+function rcpView(){const o=rc;
+ return `<div class="wrap">${o.logo?`<img src="${esc(o.logo)}" style="display:block;margin:0 auto 8px;max-height:64px;max-width:160px">`:''}<h2 style="text-align:center;margin:0">${esc(o.shop)}</h2><small style="text-align:center">Struk pesanan online</small>
+ <div class="card" style="margin:14px 0"><div class="row"><b>${esc(o.code)}</b><span class="tag">${ST[o.status]||o.status}</span></div><small>${new Date(o.created_at).toLocaleString('id-ID')}</small><hr>${o.items.map(i=>`<div class="row" style="margin:4px 0"><span>${i.qty}x ${esc(i.name)}</span><span>${rp(i.price*i.qty)}</span></div>`).join('')}<hr><div class="row"><b>Total</b><b>${rp(o.total)}</b></div><hr><small>Atas nama: ${esc(o.name)} (${esc(o.phone)})</small><small>Pengambilan: ${PK[o.pickup]}${o.receiver?', '+esc(o.receiver):''}</small><small>Pembayaran: ${o.pay=='QRIS'?'QRIS':'Bayar di tempat'}</small>${o.note?`<small>Catatan: ${esc(o.note)}</small>`:''}</div>
+ ${o.pay=='QRIS'&&o.qris?`<div class="card" style="text-align:center;margin-bottom:14px"><b>Bayar dengan QRIS</b><img src="${esc(o.qris)}" style="display:block;width:100%;max-width:280px;margin:10px auto;border-radius:12px"><b>${rp(o.total)}</b><small>Setelah membayar, kirim bukti ke toko lewat WhatsApp.</small></div>`:''}
+ <div class="two noprint">${o.wa?`<a class="btn g" target="_blank" href="https://wa.me/${wa(o.wa)}?text=${encodeURIComponent('Halo, saya '+o.name+', pesanan '+o.code+'.'+(o.pay=='QRIS'?' Ini bukti pembayaran QRIS.':''))}">Hubungi toko</a>`:''}<button class="btn g" data-a="refresh">Cek status</button><button class="btn" data-a="print">Cetak</button></div><small class="noprint" style="text-align:center;margin-top:12px">Simpan halaman ini untuk melihat status pesananmu lagi.</small></div>`}
+const draw=()=>{R.innerHTML=({cat:catView,form:formView,rcp:rcpView})[V]();scrollTo(0,0)};
+const sv=()=>['n','p','r','c'].forEach(i=>{const e=$('#'+i);if(e)f[i]=e.value});
+async function loadRc(c,quiet){const{data,error}=await sb.rpc('online_receipt',{c});if(error||!data){if(!quiet)R.innerHTML='<div class="wrap"><p class="mu">Pesanan tidak ditemukan.</p></div>';return}rc=data;V='rcp';draw()}
+const A={
+ ct:d=>{cat=d.k;draw()},
+ add(d){const p=C.products.find(x=>x.id==d.id),c=cart[d.id]||(cart[d.id]={id:p.id,name:p.name,price:+p.price,qty:0});if(c.qty<p.stock)c.qty++;else toast('Stok tidak cukup');sv();const y=scrollY;draw();scrollTo(0,y)},
+ dec(d){if(--cart[d.id].qty<=0)delete cart[d.id];sv();const y=scrollY;if(!cnt()&&V=='form')V='cat';draw();scrollTo(0,y)},
+ go:()=>{V='form';draw()},back:()=>{sv();V='cat';draw()},
+ pk(d){sv();f.pickup=d.k;draw()},py(d){sv();f.pay=d.k;draw()},
+ async send(){sv();if(!f.n?.trim()||!f.p?.trim())return toast('Isi nama dan nomor HP');if(!f.pay)return toast('Pilih metode pembayaran');
+  const{data,error}=await sb.rpc('place_online_order',{b:B,p_name:f.n,p_phone:f.p,p_pickup:f.pickup,p_receiver:f.pickup=='ambil_sendiri'?null:(f.r||null),p_pay:f.pay,p_note:f.c||null,p_items:Object.values(cart).map(i=>({id:i.id,qty:i.qty}))});
+  if(error)return toast(error.message);history.replaceState(null,'','?b='+B+'&k='+data);cart={};loadRc(data)},
+ refresh:()=>loadRc(K||rc.code),print:()=>print()
+};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(el)A[el.dataset.a]?.(el.dataset)});
+async function init(){
+ if(!SUPABASE_URL||!SUPABASE_KEY)return R.innerHTML='<div class="wrap"><p>Isi SUPABASE_URL dan SUPABASE_KEY di file katalog.html.</p></div>';
+ sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+ const code=K;
+ if(code){await loadRc(code);setInterval(()=>V=='rcp'&&loadRc(code,true),30000);return}
+ if(!B)return R.innerHTML='<div class="wrap"><p class="mu">Link katalog tidak lengkap.</p></div>';
+ const{data}=await sb.rpc('catalog',{b:B});
+ if(!data)return R.innerHTML='<div class="wrap"><p class="mu">Toko tidak ditemukan.</p></div>';
+ C=data;f.pay=C.cod!==false?'COD':'QRIS';draw()}
+init();
+</script></body></html>
